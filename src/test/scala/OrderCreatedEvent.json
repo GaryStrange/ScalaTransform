@@ -1,0 +1,8 @@
+[{
+  "type": "Messages.Events.OrderCreatedInternalV1",
+  "OrderReference": "000000XXXXXX"
+},
+{
+  "type": "Messages.Events.OrderCreatedInternalV1",
+  "OrderReference": "000001XXXXXX"
+}]
