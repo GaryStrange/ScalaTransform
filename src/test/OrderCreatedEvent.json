@@ -1,8 +1,27 @@
-[{
-  "type": "Messages.Events.OrderCreatedInternalV1",
-  "OrderReference": "000000XXXXXX"
-},
+[
+  {
+    "type": "Messages.Events.OrderCreatedInternalV1",
+    "OrderReference": "000000XXXXXX",
+    "Products": [
+      {
+
+        "ProductId": 1404601
+      },
+      {
+
+        "ProductId": 1404602
+      }
+    ]
+  },
 {
   "type": "Messages.Events.OrderCreatedInternalV1",
-  "OrderReference": "000001XXXXXX"
+  "OrderReference": "000001XXXXXX",
+  "Products": [
+    {
+      "ProductId": 2404601
+    },
+    {
+      "ProductId": 2404602
+    }
+  ]
 }]
