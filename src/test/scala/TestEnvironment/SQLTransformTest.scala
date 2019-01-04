@@ -7,7 +7,8 @@ class SQLTransformTest extends Specification  {
   "TransformTest" should {
     "return true" in {
       val ld = landedData
-      TheJob.transform must_=== true
+      println(ld.printSchema())
+      TheJob.transform(landedData) must_=== landedData
     }
   }
 }

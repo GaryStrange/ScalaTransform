@@ -7,8 +7,8 @@ object TheJob {
     implicit val spark: SparkSession = SparkSession.builder.getOrCreate()
   }
 
-  def transform() : Boolean = {
+  def transform(data:DataFrame) : DataFrame = {
 
-    return false
+    return data
   }
 }
