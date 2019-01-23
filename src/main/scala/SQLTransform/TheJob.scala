@@ -16,6 +16,7 @@ object TheJob {
     return dft.dataType.typeName
   }
 
+
   def transformUsingSQLAPI(data:DataFrame) : DataFrame = {
 
     return data
@@ -27,7 +28,8 @@ object TheJob {
     data.createOrReplaceTempView("Orders")
 
     return data.sparkSession.sql(
-      "SELECT OrderReference, exploded FROM Orders LATERAL VIEW explode(Products) as exploded"
+      "SELECT OrderReference, exploded, Promotions[0].DiscountCode, Promotions[1].NDD FROM Orders " +
+        "         LATERAL VIEW explode(Products) as exploded"
     )
   }
 
