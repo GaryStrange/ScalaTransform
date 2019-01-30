@@ -1,7 +1,13 @@
 package Job
 
 import Data.TStorage
+import org.apache.spark.sql.SparkSession
 
-class SalesOrderJob(dataStore: TStorage) extends Job(dataStore) {
-  val dataStorage: TStorage = SalesOrderStorage
+object SalesOrderJob extends Job(SalesOrderStorage) {
+  override def main(args: Array[String]): Unit = {
+
+  }
+
+  override val session = if (isLocalJob) SparkSession.builder.master("local").getOrCreate()
+  else SparkSession.builder.getOrCreate()
 }

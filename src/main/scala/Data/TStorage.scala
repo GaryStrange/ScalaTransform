@@ -8,11 +8,9 @@ trait TStorage {
 
   val READING_OPTION_MULTILINE = "multiLine"
 
-  val schema : StructType
+  private def partitionColumn(columnName: String) = col(columnName)
 
-  def partitionColumn(columnName: String) = col(columnName)
-
-  def readData(session: SparkSession) = {
+  def readData(session: SparkSession, schema: StructType) = {
     session
       .read
       .option(READING_OPTION_MULTILINE, value = true)
@@ -20,7 +18,7 @@ trait TStorage {
       .json(storagePaths.landingPath)
   }
 
-  def withPartitionColumns(data:DataFrame, partitionColumn: Column)= {
+  private def withPartitionColumns(data:DataFrame, partitionColumn: Column)= {
     data
       .withColumn("yy", date_format(partitionColumn, "yyyy"))
       .withColumn("mm", date_format(partitionColumn, "MM"))
