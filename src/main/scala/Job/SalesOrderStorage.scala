@@ -1,9 +1,13 @@
 package Job
 
-import Data.TStorage
+import Data.{StoragePaths, TStorage}
+import org.apache.spark.sql.SparkSession
 
 object SalesOrderStorage extends TStorage{
-  override def readData: Unit = {}
 
   override def writeData: Unit = {}
+
+  override val storagePaths = new StoragePaths("cmc") {
+
+  }
 }
