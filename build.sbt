@@ -11,7 +11,7 @@ val sparkSqlV = "2.3.1"
 val dbutilsV = "0.0.3"
 val specs2V = "4.3.4"
 val scallopV = "3.1.5"
-val appInsightsV = "2.1.2"
+//val appInsightsV = "2.1.2"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-sql" % sparkSqlV % Provided withSources() withJavadoc()
