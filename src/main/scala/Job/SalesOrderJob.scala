@@ -1,17 +1,14 @@
 package Job
 
-import Compute.{SessionBuilder, SessionConfig}
-import Data.TStorage
-import org.apache.spark.sql.SparkSession
+import Compute.SessionConfig
 
 object SalesOrderJob extends Job(SalesOrderStorage) {
 
   override def main(args: Array[String]): Unit = {
-    //sessionConfig = new SessionConfig(false, "","","")
-
-
+    super.main(args)
   }
 
-  override val sessionConfig = new SessionConfig(false, "","","")
+  override val activities = new JobActivities
+  override val sessionConfig = new SessionConfig(true, "","","")
 
 }

@@ -2,7 +2,6 @@ package SQLTransform
 
 import org.apache.spark.sql.types.{ArrayType, DataType, StructField, StructType}
 
-import scala.collection.immutable.RedBlackTree.Tree
 import scala.collection.mutable.ListBuffer
 
 object TransformTranslation {

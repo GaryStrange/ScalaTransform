@@ -8,8 +8,11 @@ abstract class Job(dataStore: TStorage) {
   def main(args: Array[String]): Unit = {
     implicit val spark: SparkSession =
       SessionBuilder.getSessionFrom(sessionConfig)
+
+    activities.Start()
   }
 
+  val activities: TJobActivities
 
   val sessionConfig: SessionConfig
 }
