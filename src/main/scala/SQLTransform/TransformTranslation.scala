@@ -1,10 +1,12 @@
 package SQLTransform
 
-import org.apache.spark.sql.types.{DataType,ArrayType,StructType,StructField}
+import org.apache.spark.sql.types.{ArrayType, DataType, StructField, StructType}
+
+import scala.collection.immutable.RedBlackTree.Tree
 import scala.collection.mutable.ListBuffer
 
 object TransformTranslation {
-  val dataTypeToTransform: Map[String, (ListBuffer[String], DataType) => ListBuffer[String]] = Map(
+  val dataTypeToTransform: Map[String, (ListBuffer[TransformationStep], DataType) => ListBuffer[TransformationStep]] = Map(
     "array" -> explodeTranslation,
     "string" -> projectColumn,
     "int" -> projectColumn,
@@ -12,8 +14,11 @@ object TransformTranslation {
     "long" -> projectColumn
   )
 
-  def structTranslation( list: ListBuffer[String], dataType: DataType) = {
-    list += "struct"
+  def structTranslation( list: ListBuffer[TransformationStep], dataType: DataType) = {
+    val item = new TransformationStep(TransformLabel.Branch, "struct")
+    list += item
+
+
     val subType : StructType = dataType.asInstanceOf[StructType]
     for (field <- subType.fields)
       {
@@ -22,14 +27,16 @@ object TransformTranslation {
     list
   }
 
-  def explodeTranslation( list: ListBuffer[String], dataType: DataType) = {
-    list += s"explode(${dataType.typeName})"
+  def explodeTranslation( list: ListBuffer[TransformationStep], dataType: DataType) = {
+    val item = new TransformationStep(TransformLabel.Explode, s"explode(${dataType.typeName})")
+    list += item
     val subType : ArrayType = dataType.asInstanceOf[ArrayType]
     ListDataTypeTransforms(list, subType.elementType)
   }
 
-  def projectColumn( list: ListBuffer[String], dataType: DataType) = {
-    list += s"project(${dataType.typeName}"
+  def projectColumn( list: ListBuffer[TransformationStep], dataType: DataType) = {
+    val item = new TransformationStep(TransformLabel.Project, s"project(${dataType.typeName}")
+    list += item
     list
   }
 
@@ -37,13 +44,14 @@ object TransformTranslation {
     dataTypeToTransform.get(dataType.typeName)
   }
 
-  def ListDataTypeTransforms( list: ListBuffer[String], dataType: DataType) = {
+  def ListDataTypeTransforms( list: ListBuffer[TransformationStep], dataType: DataType) = {
     dataTypeToTransform(dataType.typeName)(list, dataType)
   }
 
-  def ListFieldTransforms( list: ListBuffer[String], field: StructField)  =
+  def ListFieldTransforms( list: ListBuffer[TransformationStep], field: StructField)  =
   {
-    list += s"Transform(${field.name})"
+    val item = new TransformationStep(TransformLabel.Transform, s"Transform(${field.name})")
+    list += item
     dataTypeToTransform(field.dataType.typeName)(list, field.dataType)
   }
 }

@@ -2,7 +2,8 @@ package TestEnvironment
 
 import org.specs2.mutable.Specification
 import TestSession._
-import SQLTransform.TransformTranslation
+import SQLTransform.{TransformTranslation, TransformationStep}
+
 import scala.collection.mutable.ListBuffer
 
 class TransformTranslationTest extends Specification{
@@ -10,7 +11,7 @@ class TransformTranslationTest extends Specification{
     "return true" in {
 
       for (field <- landedData.schema.fields) {
-        val myTransformations : ListBuffer[String] = new ListBuffer[String]
+        val myTransformations : ListBuffer[TransformationStep] = new ListBuffer[TransformationStep]
         println(field.toString() + " translates to ")
         println("    " + TransformTranslation.ListFieldTransforms(myTransformations,field))
         //println(myTransformations)
