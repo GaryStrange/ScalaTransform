@@ -1,6 +1,7 @@
 package Job
 
 import Compute.SessionConfig
+import Logging.{Logger, PrintLnLogger}
 
 object SalesOrderJob extends Job(SalesOrderStorage) {
 
@@ -8,7 +9,8 @@ object SalesOrderJob extends Job(SalesOrderStorage) {
     super.main(args)
   }
 
-  override val activities = new JobActivities
+  override val logger: Logger = PrintLnLogger
+  override val activities = OrderCreatedActivities
   override val sessionConfig = new SessionConfig(true, "","","")
 
 }

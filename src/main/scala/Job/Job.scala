@@ -1,7 +1,8 @@
 package Job
 
 import Compute.{SessionBuilder, SessionConfig}
-import Data.TStorage
+import Data.{TStorage, WriteConfig}
+import Logging.Logger
 import org.apache.spark.sql.SparkSession
 
 abstract class Job(dataStore: TStorage) {
@@ -9,8 +10,11 @@ abstract class Job(dataStore: TStorage) {
     implicit val spark: SparkSession =
       SessionBuilder.getSessionFrom(sessionConfig)
 
-    activities.Start()
+    val sourceData = dataStore.readData(spark, activities.sourceSchema, activities.sourceDataSubPath)
+
+    activities.Process(sourceData, dataStore.writeData("parquet"), logger)
   }
+  val logger:Logger
 
   val activities: TJobActivities
 

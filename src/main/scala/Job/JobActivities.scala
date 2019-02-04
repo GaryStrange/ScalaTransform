@@ -1,33 +1,46 @@
 package Job
 
-import Job.JobActivities.TActivity
+import Data.WriteConfig
+import DataContracts.inbound.EncodedContract
+import Job.Transformations.TTransform
 import Logging.{Logger, PrintLnLogger}
+import org.apache.spark.sql.types.StructType
 import org.apache.spark.sql.{DataFrame, Dataset}
 
-class JobActivities extends TJobActivities {
-  override val logger: Logger = PrintLnLogger
-  def sourceData[T]: Dataset[T] = null
-  override val activities: List[TActivity] = null
-}
+//class OrderCreatedActivities extends TJobActivities {
+//  override val logger: Logger = PrintLnLogger
+//  def sourceData( reader: (StructType, String) => DataFrame ): DataFrame = null
+//  def transformations: List[TTransform] = null
+//  override val writeConfig: WriteConfig = null
+//}
+
 
 
 trait TJobActivities {
-  val logger: Logger
+  val writeConfig: WriteConfig
+  val sourceSchema: StructType
+  val sourceDataSubPath: String
 
-  def sourceData[T]: Dataset[T]
-  val activities: List[TActivity]
+  def transformations: List[TTransform]
 
-  def Start(): Unit ={
+  def Process(sourceData:DataFrame, persist: ( DataFrame, String, WriteConfig) => Unit, logger:Logger): Unit ={
     logger.log("Activity Started.")
 
-    activities.foreach(
-      _.execute(sourceData)
-    )
+    transformations.foreach {
+      case (transform: TTransform) => {
+        val message = s"Executing ${transform.name}"
+
+        persist(logger.timeAndLog(message) {
+          transform.execute(sourceData)
+        }
+          , transform.dateTimeColumnForPartitioning
+          , writeConfig)
+
+      }
+    }
   }
-}
-
-trait TActivity {
-  def execute[T](sourceData: Dataset[T]): DataFrame
 
 }
+
+
 

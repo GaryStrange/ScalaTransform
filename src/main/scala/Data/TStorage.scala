@@ -10,15 +10,16 @@ trait TStorage {
 
   private def partitionColumn(columnName: String) = col(columnName)
 
-  def readData(session: SparkSession, schema: StructType) = {
+  def readData(session: SparkSession, schema: StructType, subPath: String) = {
     session
       .read
       .option(READING_OPTION_MULTILINE, value = true)
       .schema(schema)
-      .json(storagePaths.landingPath)
+      .json(storagePaths.landingPath + subPath)
   }
 
-  private def withPartitionColumns(data:DataFrame, partitionColumn: Column)= {
+
+  private def withPartitionColumns(data: DataFrame, partitionColumn: Column) = {
     data
       .withColumn("yy", date_format(partitionColumn, "yyyy"))
       .withColumn("mm", date_format(partitionColumn, "MM"))
@@ -26,15 +27,15 @@ trait TStorage {
       .withColumn("hh", date_format(partitionColumn, "HH"))
   }
 
-  def writeData(data: DataFrame, config: WriteConfig) = {
-    withPartitionColumns(data, partitionColumn(config.dateTimeColumnForPartitioning))
+  def writeData(format: String)(data: DataFrame, dateTimeColumnForPartitioning: String, config: WriteConfig) = {
+    withPartitionColumns(data, partitionColumn(dateTimeColumnForPartitioning))
       .repartition(numPartitions = config.numPartitions)
       .write
       .mode(config.saveMode)
       .partitionBy("yy", "mm", "dd", "hh")
-      .format(config.format)
+      .format(format)
       .save(storagePaths.stagingPath)
   }
 
-  val storagePaths : StoragePaths
+  val storagePaths: StoragePaths
 }
